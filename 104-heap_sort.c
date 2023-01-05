@@ -1,79 +1,65 @@
 #include "sort.h"
 
 /**
- * sift_down - fixes a heap
- * @array: Heap to fix
- * @root: Root of the heap
- * @end: Last index of the heap
- * @size: Size of the array
- *
- * Return: void
+ * swap_root - A function that swap the root nodes.
+ * @array: The heap to sort.
+ * @root: The root of the heap.
+ * @hi: The higher index.
+ * @size: The size of the array.
+ * Return: Nothing
  */
-void sift_down(int *array, size_t root, size_t end, size_t size)
+void swap_root(int *array, size_t root, size_t hi, size_t size)
 {
-	size_t left_child, right_child, swap;
-	int temp;
+	size_t lo = 0, mi = 0, tmp = 0;
+	int aux = 0;
 
-	while ((left_child = (2 * root) + 1) <= end)
+	while ((lo = (2 * root + 1)) <= hi)
 	{
-		swap = root;
-		right_child = left_child + 1;
-		if (array[swap] < array[left_child])
-			swap = left_child;
-		if (right_child <= end && array[swap] < array[right_child])
-			swap = right_child;
-		if (swap == root)
+		tmp = root;
+		mi = lo + 1;
+		if (array[tmp] < array[lo])
+			tmp = lo;
+		if (mi <= hi && array[tmp] < array[mi])
+			tmp = mi;
+		if (tmp == root)
 			return;
-		temp = array[root];
-		array[root] = array[swap];
-		array[swap] = temp;
+		aux = array[root];
+		array[root] = array[tmp];
+		array[tmp] = aux;
 		print_array(array, size);
-		root = swap;
+		root = tmp;
 	}
 }
 
 /**
- * make_heap - makes a heap from an unsorted array
- * @array: Array to turn into a heap
- * @size: Size of the array
- *
- * Return: void
- */
-void make_heap(int *array, size_t size)
-{
-	size_t parent;
-
-	for (parent = ((size - 1) - 1) / 2; 1; parent--)
-	{
-		sift_down(array, parent, size - 1, size);
-		if (parent == 0)
-			break;
-	}
-}
-
-/**
- * heap_sort - sorts an array of ints in ascending order w/ the Heap sort algo
- * @array: Array to sort
- * @size: Size of the array
- *
- * Return: void
+ * heap_sort - A function that sorts an array using heap algorithm.
+ * @array: An array to sort.
+ * @size: The size of the array.
+ * Return: Nothing.
  */
 void heap_sort(int *array, size_t size)
 {
-	size_t end;
-	int temp;
+	size_t hi = 0, gap = 0;
+	int tmp = 0;
 
-	if (array == NULL || size < 2)
-		return;
-	make_heap(array, size);
-	end = size - 1;
-	while (end > 0)
+		if (array == NULL || size < 2)
+			return;
+
+		for (gap = (size - 2) / 2; 1; gap--)
+		{
+			swap_root(array, gap, size - 1, size);
+			if (gap == 0)
+				break;
+		}
+
+		hi = size - 1;
+		while (hi > 0)
 	{
-		temp = array[end];
-		array[end] = array[0];
-		array[0] = temp;
+		tmp = array[hi];
+		array[hi] = array[0];
+		array[0] = tmp;
 		print_array(array, size);
-		end--;
-		sift_down(array, 0, end, size);
+		hi--;
+		swap_root(array, 0, hi, size);
 	}
 }
